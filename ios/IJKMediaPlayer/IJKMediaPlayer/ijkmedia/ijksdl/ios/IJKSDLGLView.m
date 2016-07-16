@@ -23,11 +23,12 @@
  */
 
 #import "IJKSDLGLView.h"
+
+#ifndef MD360PlayerMode
 #include "ijksdl/ijksdl_timer.h"
 #include "ijksdl/ios/ijksdl_ios.h"
 #include "ijksdl/ijksdl_gles2.h"
 #import "IJKSDLHudViewController.h"
-
 @interface IJKSDLGLView()
 @property(atomic,strong) NSRecursiveLock *glActiveLock;
 @property(atomic) BOOL glActivePaused;
@@ -612,3 +613,4 @@
 }
 
 @end
+#endif
