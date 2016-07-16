@@ -28,13 +28,13 @@
 - (id) initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+#ifdef MDFPS
         self.label = [[UILabel alloc]initWithFrame:CGRectMake(0, frame.size.height - 20, 200, 20)];
         self.label.font = [UIFont systemFontOfSize:17];
         [self.label setText:@"fps"];
         [self.label setTextColor:[UIColor colorWithWhite:1 alpha:1]];
-
-
         [self addSubview:self.label];
+#endif
     }
     return self;
 }
@@ -56,9 +56,11 @@
     }
     
     [self countFps];
+#ifdef MDFPS
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.label setText:[NSString stringWithFormat:@"fps:%f",self.fps]];
     });
+#endif
     
 }
 

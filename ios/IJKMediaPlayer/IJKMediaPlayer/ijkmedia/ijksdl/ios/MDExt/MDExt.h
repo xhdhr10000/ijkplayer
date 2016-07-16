@@ -5,7 +5,9 @@
 //  Created by ashqal on 16/7/14.
 //  Copyright © 2016年 bilibili. All rights reserved.
 //
-// #define MD360PlayerMode
+
+#define MD360PlayerMode
+// #define MDFPS
 
 #ifndef MDExt_h
 #define MDExt_h
