@@ -5,7 +5,7 @@
 
 target 'IJKMediaDemo' do
 
-pod 'MD360Player4iOS', '~> 1.1.0'
+pod 'MD360Player4iOS', '~> 1.1.1.beta'
 
 end
 
