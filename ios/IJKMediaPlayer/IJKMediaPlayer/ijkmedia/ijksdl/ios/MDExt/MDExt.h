@@ -21,6 +21,7 @@ struct MDVideoFrame {
     int planes; /**< Read-only */
     uint16_t *pitches; /**< in bytes, Read-only */
     unsigned char **pixels; /**< Read-write */
+    CVPixelBufferRef buffer;
 };
 
 typedef struct MDVideoFrame MDVideoFrame;

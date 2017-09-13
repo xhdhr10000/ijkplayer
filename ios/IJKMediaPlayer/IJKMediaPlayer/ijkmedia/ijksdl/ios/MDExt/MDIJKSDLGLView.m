@@ -13,6 +13,12 @@
 #import "MDExt.h"
 #include "ijksdl/ijksdl_timer.h"
 
+struct SDL_VoutOverlay_Opaque {
+    SDL_mutex *mutex;
+    CVPixelBufferRef pixel_buffer;
+    Uint16 pitches[AV_NUM_DATA_POINTERS];
+    Uint8 *pixels[AV_NUM_DATA_POINTERS];
+};
 @interface IJKSDLGLView()<MDIJKSDLGLView>{
     int             _frameCount;
     int64_t         _lastFrameTime;
@@ -50,9 +56,19 @@
         frame -> planes = overlay->planes;
         frame -> pitches = overlay->pitches;
         frame -> pixels = overlay->pixels;
+        frame ->buffer = NULL;
+        if (overlay->opaque != NULL && overlay->opaque->pixel_buffer != NULL) {
+            frame->buffer = ((SDL_VoutOverlay_Opaque*)overlay->opaque)->pixel_buffer;
+            CVBufferRetain(frame->buffer);
+        }
+
         [self.callback onFrameAvailable:(frame)];
         
         free(frame);
+        if (frame != NULL) {
+            CVBufferRelease(frame->buffer);
+        }
+        
     }
     
     [self countFps];
