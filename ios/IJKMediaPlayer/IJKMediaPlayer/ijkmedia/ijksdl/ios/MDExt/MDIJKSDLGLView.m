@@ -64,10 +64,11 @@ struct SDL_VoutOverlay_Opaque {
 
         [self.callback onFrameAvailable:(frame)];
         
-        free(frame);
-        if (frame != NULL) {
+        if (frame ->buffer != NULL) {
             CVBufferRelease(frame->buffer);
         }
+        free(frame);
+       
         
     }
     
