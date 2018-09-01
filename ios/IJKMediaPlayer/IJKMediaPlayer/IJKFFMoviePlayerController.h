@@ -68,6 +68,16 @@ typedef enum IJKLogLevel {
     k_IJK_LOG_SILENT  = 8,
 } IJKLogLevel;
 
+typedef struct FrameOut FrameOut;
+struct FrameOut {
+    int w;
+    int h;
+    UInt32 format;
+    int planes;
+    UInt16 *pitches;
+    UInt8 **pixels;
+};
+
 @interface IJKFFMoviePlayerController : NSObject <IJKMediaPlayback>
 
 - (id)initWithContentURL:(NSURL *)aUrl
@@ -116,6 +126,8 @@ typedef enum IJKLogLevel {
 - (void)setCodecOptionIntValue:     (int64_t)value forKey:(NSString *)key;
 - (void)setSwsOptionIntValue:       (int64_t)value forKey:(NSString *)key;
 - (void)setPlayerOptionIntValue:    (int64_t)value forKey:(NSString *)key;
+
+- (FrameOut *)getCurrentFrame;
 
 @property (nonatomic, retain) id<IJKMediaUrlOpenDelegate> segmentOpenDelegate;
 @property (nonatomic, retain) id<IJKMediaUrlOpenDelegate> tcpOpenDelegate;

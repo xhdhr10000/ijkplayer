@@ -2378,6 +2378,7 @@ static int is_realtime(AVFormatContext *s)
 {
     if(   !strcmp(s->iformat->name, "rtp")
        || !strcmp(s->iformat->name, "rtsp")
+       || !strcmp(s->iformat->name, "rtmp")
        || !strcmp(s->iformat->name, "sdp")
     )
         return 1;
@@ -4132,4 +4133,40 @@ IjkMediaMeta *ffp_get_meta_l(FFPlayer *ffp)
         return NULL;
 
     return ffp->meta;
+}
+
+FrameOut* ffp_get_current_frame_l(FFPlayer *ffp)
+{
+    printf("%s: start snapshot\n", __func__);
+
+    VideoState *is = ffp->is;
+    Frame *vp = frame_queue_peek(&is->pictq);
+    SDL_VoutOverlay *bmp = vp->bmp;
+    if (!bmp) {
+        printf("%s: no overlay\n", __func__);
+        return NULL;
+    }
+
+    FrameOut *ret = malloc(sizeof(FrameOut));
+    int i;
+    ret->format = bmp->format;
+    ret->w = bmp->w;
+    ret->h = bmp->h;
+    ret->planes = bmp->planes;
+    ret->pitches = malloc(sizeof(Uint16) * ret->planes);
+    ret->pixels = malloc(sizeof(Uint8*) * ret->planes);
+    for (i = 0; i < ret->planes; i++) {
+        ret->pitches[i] = bmp->pitches[i];
+        int size = ret->pitches[i] * ret->h;
+        if (bmp->format == SDL_FCC_I420 && i > 0) {
+            size /= 2;
+            ret->pitches[i] /= 2;
+        }
+        ret->pixels[i] = malloc(sizeof(Uint8) * size);
+        memcpy(ret->pixels[i], bmp->pixels[i], size);
+    }
+
+    printf("%s: end snapshot\n", __func__);
+
+    return ret;
 }

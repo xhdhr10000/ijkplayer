@@ -33,6 +33,7 @@
 #endif
 
 typedef struct IjkMediaPlayer IjkMediaPlayer;
+typedef struct FrameOut FrameOut;
 struct FFPlayer;
 struct SDL_Vout;
 
@@ -206,6 +207,8 @@ long            ijkmp_get_duration(IjkMediaPlayer *mp);
 long            ijkmp_get_playable_duration(IjkMediaPlayer *mp);
 void            ijkmp_set_loop(IjkMediaPlayer *mp, int loop);
 int             ijkmp_get_loop(IjkMediaPlayer *mp);
+FrameOut*       ijkmp_get_current_frame(IjkMediaPlayer *mp);
+
 
 void           *ijkmp_get_weak_thiz(IjkMediaPlayer *mp);
 void           *ijkmp_set_weak_thiz(IjkMediaPlayer *mp, void *weak_thiz);

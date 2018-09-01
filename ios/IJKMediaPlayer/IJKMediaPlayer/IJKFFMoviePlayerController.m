@@ -1396,6 +1396,11 @@ static int ijkff_inject_callback(void *opaque, int message, void *data, size_t d
     [self setPlayerOptionIntValue:maxBufferSize forKey:@"max-buffer-size"];
 }
 
+- (FrameOut *)getCurrentFrame
+{
+    return ijkmp_get_current_frame(_mediaPlayer);
+}
+
 #pragma mark app state changed
 
 - (void)registerApplicationObservers

@@ -82,7 +82,7 @@
 #define MIN_FRAMES 25
 #endif
 #define DEFAULT_MIN_FRAMES  50000
-#define MIN_MIN_FRAMES      5
+#define MIN_MIN_FRAMES      1
 #define MAX_MIN_FRAMES      50000
 #define MIN_FRAMES (ffp->dcc.min_frames)
 #define EXTERNAL_CLOCK_MIN_FRAMES 2
@@ -198,6 +198,16 @@ typedef struct Frame {
     int height;
     AVRational sar;
 } Frame;
+
+typedef struct FrameOut FrameOut;
+struct FrameOut {
+    int w;
+    int h;
+    Uint32 format;
+    int planes;
+    Uint16 *pitches;
+    Uint8 **pixels;
+};
 
 typedef struct FrameQueue {
     Frame queue[FRAME_QUEUE_SIZE];

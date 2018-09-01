@@ -626,6 +626,20 @@ long ijkmp_get_playable_duration(IjkMediaPlayer *mp)
     return retval;
 }
 
+static FrameOut* ijkmp_get_current_frame_l(IjkMediaPlayer *mp)
+{
+    return ffp_get_current_frame_l(mp->ffplayer);
+}
+
+FrameOut* ijkmp_get_current_frame(IjkMediaPlayer *mp)
+{
+    assert(mp);
+    pthread_mutex_lock(&mp->mutex);
+    FrameOut *frame = ijkmp_get_current_frame_l(mp);
+    pthread_mutex_unlock(&mp->mutex);
+    return frame;
+}
+
 void ijkmp_set_loop(IjkMediaPlayer *mp, int loop)
 {
     assert(mp);
