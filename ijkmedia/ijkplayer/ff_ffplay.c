@@ -974,7 +974,15 @@ static double compute_target_delay(FFPlayer *ffp, double delay, VideoState *is)
 }
 
 static double vp_duration(VideoState *is, Frame *vp, Frame *nextvp) {
-    return vp->duration;
+    if (vp->serial == nextvp->serial) {
+        double duration = nextvp->pts - vp->pts;
+        if (isnan(duration) || duration <= 0 || duration > is->max_frame_duration)
+            return vp->duration;
+        else
+            return duration;
+    } else {
+        return 0.0;
+    }
 }
 
 static void update_video_pts(VideoState *is, double pts, int64_t pos, int serial) {
@@ -1669,7 +1677,7 @@ static int ffplay_video_thread(void *arg)
     double duration;
     int ret;
     AVRational tb = is->video_st->time_base;
-//    AVRational frame_rate = av_guess_frame_rate(is->ic, is->video_st, NULL);
+    AVRational frame_rate = av_guess_frame_rate(is->ic, is->video_st, NULL);
 
 #if CONFIG_AVFILTER
     AVFilterGraph *graph = avfilter_graph_alloc();
@@ -1754,8 +1762,7 @@ static int ffplay_video_thread(void *arg)
                 is->frame_last_filter_delay = 0;
             tb = filt_out->inputs[0]->time_base;
 #endif
-//            duration = (frame_rate.num && frame_rate.den ? av_q2d((AVRational){frame_rate.den, frame_rate.num}) : 0);
-            duration = 0.01;
+            duration = (frame_rate.num && frame_rate.den ? av_q2d((AVRational){frame_rate.den, frame_rate.num}) : 0);
             pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
             ret = queue_picture(ffp, frame, pts, duration, av_frame_get_pkt_pos(frame), is->viddec.pkt_serial);
             av_frame_unref(frame);
