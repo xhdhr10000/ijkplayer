@@ -976,7 +976,7 @@ static double compute_target_delay(FFPlayer *ffp, double delay, VideoState *is)
 static double vp_duration(VideoState *is, Frame *vp, Frame *nextvp) {
     if (vp->serial == nextvp->serial) {
         double duration = nextvp->pts - vp->pts;
-        if (isnan(duration) || duration <= 0 || duration > is->max_frame_duration)
+        if (is->realtime || isnan(duration) || duration <= 0 || duration > is->max_frame_duration)
             return vp->duration;
         else
             return duration;
@@ -1586,6 +1586,7 @@ static int audio_thread(void *arg)
             goto the_end;
 
         if (got_frame) {
+                av_log(NULL, AV_LOG_ERROR, "audio->pts = %lld\n", frame->pts);
                 tb = (AVRational){1, frame->sample_rate};
 
 #if CONFIG_AVFILTER
@@ -1709,6 +1710,7 @@ static int ffplay_video_thread(void *arg)
         if (!ret)
             continue;
 
+        av_log(NULL, AV_LOG_ERROR, "video->pts = %lld\n", frame->pts);
 #if CONFIG_AVFILTER
         if (   last_w != frame->width
             || last_h != frame->height
